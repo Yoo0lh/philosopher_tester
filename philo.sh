@@ -9,6 +9,8 @@ Purple='\033[0;35m'       # Purple
 Cyan='\033[0;36m'         # Cyan
 White='\033[0;37m'        # White
 SP="  "
+file_output="output"
+
 test_1 ()
 {
 		echo -en "${Purple}test 1 :"
@@ -104,12 +106,56 @@ test_2 ()
 		fi
 		pkill philo &2>/dev/null
 		echo " "
-		rm -f log
+		rm -f $file_output
 }
-# test_3 ()
-# {
+test_3 ()
+{
+		echo -en "${Purple}test 3 :"
+		#test 3 / 1
+		"$1" 4 410 200 200 > log  &
+		i=0
+		check=0
+		while [ $i -le  5 ]
+		do
+				pgrep $1 
+				if [ $? != 0 ]
+				then
+						check=1
+						echo  -en "${SP}${Red}KO${White}"
+						break ;
+				fi
+				sleep 1
+				i=$((i + 1))
+		done 
+		if [ $check == 0 ]
+				then
+						echo -en "${SP}${Green}OK${White}"
+		fi
+		#test 3 / 2
+		"$1" 5 800 200 200 > log  &
+		i=0
+		check=0
+		while [ $i -le  5 ]
+		do
+				pgrep $1
+				if [ "$?" -ne 0 ]
+				then
+						check=1
+						echo  -en "${SP}${Red}KO${White}"
+						break ;
+				fi
+				sleep 1
+				i=$((i + 1))
+		done 
+		if [ $check -eq 0 ]
+				then
+						echo -en "${SP}${Green}OK${White}"
+		fi
 
-# }
+		pkill philo &2> /dev/null
+		echo " "
+		rm -f $file_output
+}
 # test_4 ()
 # {
 
@@ -136,5 +182,6 @@ else
 		exit 1
 fi
 #echo $file_name
-test_1 "$file_name"
-test_2 "$file_name"
+#test_1 "$file_name"
+#test_2 "$file_name"
+test_3 "$file_name"

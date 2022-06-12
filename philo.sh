@@ -1,4 +1,3 @@
-
 #!bin/bash
 
 Black='\033[0;30m'        # Black
@@ -9,36 +8,72 @@ Blue='\033[0;34m'         # Blue
 Purple='\033[0;35m'       # Purple
 Cyan='\033[0;36m'         # Cyan
 White='\033[0;37m'        # White
-
+SP="  "
 test_1 ()
 {
-		echo -en "${Purple}test 1 : "
-		output=$("$1" 3 310 200 100 > log && sleep 2 ; pkill "$1" ; cat log | grep died -m 1 | awk '{print $NF}')
+		echo -en "${Purple}test 1 :"
+		output=$("$1" 3 310 200 100 > log && sleep 0.4 ; pkill "$1" ; cat log | grep died -m 1 | awk '{print $NF}')
 		#echo $output
 		if [ "$output" == "died" ]
 				then
-						echo -e "${Green}OK${White}"
+						echo -en "${SP}${Green}OK${White}"
 		else
-						echo -e "${Red}KO${White}"
-		output=$("$1" 3 800 400 400 > log && sleep 0.9 ; pkill "$1" ; cat log | grep died -m 1 | awk '{print $NF}')
-
-		rm -f log
+						echo -en "${SP}${Red}KO${White}"
 		fi
+		output=$("$1" 3 800 400 400 > log && sleep 0.9 ; pkill "$1" ; cat log | grep died -m 1 | awk '{print $NF}')	
+		if [ "$output" == "died" ]
+				then
+						echo -en "${SP}${Green}OK${White}"
+		else
+						echo -en "${SP}${Red}KO${White}"
+		output=$("$1" 10 800 400 400 > log && sleep 0.9 ; pkill "$1" ; cat log | grep died -m 1 | awk '{print $NF}')	
+		fi
+		if [ "$output" == "died" ]
+				then
+						echo -en "${SP}${Green}OK${White}"
+		else
+						echo -en "${SP}${Red}KO${White}"
+
+		#echo -e "\n" 
+		fi
+		pkill "$1" &2>/dev/null
+		rm -f log
+		echo " "
+		sleep 1
 }
 
 test_2 ()
 {
+		echo -en  "${Purple}test 2 :"
+		#test 2 / 1
 		"$1" 3 800 200 200 > log &
-		i=1
+		i=0
 		check=0
-		while [ $i -lt 5 ]
+		while [ $i -le 5 ]
 		do
-				pgrep philo > /dev/null
-				if [ $? != 0 ]
+				if [ $? !=  0 ]
 				then
 						check=1
-						echo -e "${Red}KO${White}"
-						pkill "$1" $2>/dev/null  
+						echo -ne "${SP}${Red}KO${White}"
+						break ;
+				fi
+				sleep 1
+				i=$((i + 1)) 
+		done
+		if [ $check == 0 ]
+				then
+						echo -ne "${SP}${Green}OK${Withe}"
+		fi
+		#test 2 / 2
+		"$1" 10 800 200 200 > log &
+		i=0
+		check=0
+		while [ $i -le 5 ]
+		do
+				if [ $? !=  0 ]
+				then
+						check=1
+						echo -ne "${SP}${Red}KO${White}"
 						break ;
 				fi
 				sleep 1
@@ -46,10 +81,30 @@ test_2 ()
 		done 
 		if [ $check == 0 ]
 				then
-						echo -e "${Green}OK${Withe}"
-						pkill "$1" &2>/dev/null 
+						echo -ne "${SP}${Green}OK${Withe}"
 		fi
-		#rm -f log
+		#test 2 / 3
+		"$1" 100 800 200 200 > log &
+		i=0
+		check=0
+		while [ $i -le 5 ]
+		do
+				if [ $? !=  0 ]
+				then
+						check=1
+						echo -ne "${SP}${Red}KO${White}"
+						break ;
+				fi
+				sleep 1
+				i=$((i + 1)) 
+		done 
+		if [ $check == 0 ]
+				then
+						echo -ne "${SP}${Green}OK${Withe}"
+		fi
+		pkill philo &2>/dev/null
+		echo " "
+		rm -f log
 }
 # test_3 ()
 # {
@@ -82,4 +137,4 @@ else
 fi
 #echo $file_name
 test_1 "$file_name"
-#test_2 "$file_name"
+test_2 "$file_name"

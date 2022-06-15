@@ -14,7 +14,12 @@ file_output="output"
 test_1 ()
 {
 		echo -en "${Purple}test 1 :"
-		output=$("$1" 3 310 200 100 > log && sleep 0.4 ; pkill "$1" ; cat log | grep died -m 1 | awk '{print $NF}')
+		#test 1 / 1
+		output=$("$1" 3 310 200 100 > log && sleep 4 ; pkill philo ; cat log | grep died -m 1 | awk '{print $NF}') 
+		# ("$1" 3 310 200 200 > log) &&
+		# sleep 5
+		# pkill $1 > /dev/null 
+		# output=$(cat log | grep died -m 1 | awk '{print $NF}')
 		#echo $output
 		if [ "$output" == "died" ]
 				then
@@ -22,39 +27,38 @@ test_1 ()
 		else
 						echo -en "${SP}${Red}KO${White}"
 		fi
-		output=$("$1" 3 800 400 400 > log && sleep 0.9 ; pkill "$1" ; cat log | grep died -m 1 | awk '{print $NF}')	
-		if [ "$output" == "died" ]
-				then
-						echo -en "${SP}${Green}OK${White}"
-		else
-						echo -en "${SP}${Red}KO${White}"
-		output=$("$1" 10 800 400 400 > log && sleep 0.9 ; pkill "$1" ; cat log | grep died -m 1 | awk '{print $NF}')	
-		fi
-		if [ "$output" == "died" ]
-				then
-						echo -en "${SP}${Green}OK${White}"
-		else
-						echo -en "${SP}${Red}KO${White}"
-
-		#echo -e "\n" 
-		fi
-		pkill "$1" &2>/dev/null
-		rm -f log
+		#test 2 / 1
+		# output=$("$1" 3 800 400 400 > log2 ; sleep 0.9 ; pkill philo ; cat log2 | grep died -m 1 | awk '{print $NF}')
+		# if [ "$output" == "died" ]
+		# 		then
+		# 				echo -en "${SP}${Green}OK${White}"
+		# else
+		# 				echo -en "${SP}${Red}KO${White}"
+		# #test 3 / 1	
+		# fi
+		# output=$("$1" 10 800 400 200 > log3 ; sleep 0.9 ; pkill philo ; cat log3 | grep died -m 1 | awk '{print $NF}')
+		# if [ "$output" == "died" ]
+		# 		then
+		# 				echo -en "${SP}${Green}OK${White}"
+		# else
+		# 				echo -en "${SP}${Red}KO${White}"
+		# fi
 		echo " "
 		sleep 1
 }
 
 test_2 ()
 {
+		make re -C ../philo > /dev/null
 		echo -en  "${Purple}test 2 :"
 		#test 2 / 1
-		output=$("$1" 3 800 200 200 > log | cat log | grep died -m 1 | awk '{print $NF}') &
+		output=$("$1" 3 800 200 200 > log &&  cat log | grep died -m 1 | awk '{print $NF}') &
 		i=0
 		check=0
-		while [ $i -le 10 ] || [ "$output" == "died" ]
+		while [ $i -le 10 ] #|| [ "$output" == "died" ]
 		do
 				pgrep philo > /dev/null 
-				if [ $? !=  0 ]
+				if [ $? !=  0 ] || [ "$output" == "died" ]
 				then
 						check=1
 						echo -ne "${SP}${Red}KO${White}"
@@ -69,7 +73,7 @@ test_2 ()
 		fi
 
 		#test 2 / 2
-		output=$("$1" 10 800 200 200 > log2 | cat log2 | grep died -m 1 | awk '{print $NF}') &
+		output=$("$1" 10 800 200 200 > log2 && cat log2 | grep died -m 1 | awk '{print $NF}') &
 		i=0
 		check=0
 		while [ $i -le 10 ]
@@ -89,13 +93,13 @@ test_2 ()
 						echo -ne "${SP}${Green}OK${Withe}"
 		fi
 		#test 2 / 3
-		output=$("$1" 100 800 200 200 > log3 | cat log3 | grep died -m 1 | awk '{print $NF}') &
+		output=$("$1" 100 800 200 200 > log3 &&  cat log3 | grep died -m 1 | awk '{print $NF}') &
 		i=0
 		check=0
-		while [ $i -le 10 ] || [ "$ouput" == "died" ]
+		while [ $i -le 10 ] #|| [ "$ouput" == "died" ]
 		do
 				pgrep philo > /dev/null  
-				if [ $? !=  0 ]
+				if [ $? !=  0 ] || [ "$output" == "died" ]
 				then
 						check=1
 						echo -ne "${SP}${Red}KO${White}"
@@ -214,5 +218,6 @@ else
 fi
 #echo $file_name
 #test_1 "$file_name"
-test_2 "$file_name"
-#test_3 "$file_name"
+#test_2 "$file_name"  
+#sleep 1
+test_3 "$file_name"

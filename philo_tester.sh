@@ -56,7 +56,7 @@ test_1 ()
 				then
 						echo -ne "${SP}${Green}OK${Withe}"
 		fi
-    pkill "$2" > /dev/null
+    #pkill "$2" > /dev/null
 		#test 2 / 3
     output=$("$1" 100 800 200 200 > log3 ; sleep 2; cat log3 | grep died -m 1 | awk '{print $NF}') &
 		i=0
@@ -207,15 +207,16 @@ test_3 ()
 
 test_4 ()
 {
-		#test 1 / 1
-		output=$("$1" 3 310 200 100 >> log ; sleep 1 ; pkill "$2" ; cat log | grep died -m 1 | awk '{print $NF}') 
+		# #test 1 / 1
+		pkill "$2" > /dev/null
+		output=$("$1" 3 310 200 100 >> log ; sleep 1 ; pkill "$2" ; cat log | grep died -m 1 | awk '{print $NF}')
 		if [ "$output" == "died" ]
 				then
 						echo -en "${SP}${Green}OK${White}"
 		else
 						echo -en "${SP}${Red}KO${White}"
 		fi
-		#test 2 / 1
+		# #test 2 / 1
 		output=$("$1" 3 800 400 400 > log2 ; sleep 0.9 ; pkill "$2" ; cat log2 | grep died -m 1| awk '{print $NF}')
 		if [ "$output" == "died" ]
 				then
@@ -256,14 +257,14 @@ elif [ "$1" == "m" ]
 		echo -e "${Yellow}[the tests might take time please wait ...]${White}"
 		echo -en  "${Purple}test 1 :"
 		test_1 "$file_name" "$optin"
-		echo -en  "${Purple}test 2 :"
-		test_4 "$file_name" "$optin"
+		echo -en  "${Purple}test 2 :" &
+		test_4 "$file_name" "$optin" # check test 4 : test 2 = test_4
 		echo -en  "${Purple}test 3 :"
 		test_3 "$file_name" "$optin"
 		echo -en  "${Purple}test 4 :"
-		test_2 "$file_name" "$optin"
+		test_2 "$file_name" "$optin" 2> /dev/null  # check the test 2 : test 4 = test 2
 		echo -e "${Cyan}==================================${Purple} END ${Cyan}================================== ${White}"
-		rm -f log log3 log2
+		rm -f log log3 log2 &2> /dev/null
 elif [ "$1" == "b" ]
 		then
 				make -C ../philo_bonus/ > /dev/null 
@@ -272,10 +273,11 @@ elif [ "$1" == "b" ]
 				echo -e "${Cyan}===============================${Purple} BONUS ${Cyan}=============================== ${White}"
 				echo -e "${Yellow}[the tests might take time please wait ...]${White}"
 				echo -en  "${Purple}test 1 :"
-				test_1 "$file_name" "$optin"
+				test_1 "$file_name" "$optin" 2> /dev/null
 				echo -en  "${Purple}test 2 :"
-				test_2 "$file_name" "$optin" 
+				test_2 "$file_name" "$optin" 2> /dev/null
 				echo -e "${Cyan}==================================${Purple} END ${Cyan}================================== ${White}"
+				rm -rf log log2 log3 &2>/dev/null
 else
 		echo "ERROR  arguments"
 		exit 1

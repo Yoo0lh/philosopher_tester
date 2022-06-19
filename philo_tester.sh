@@ -15,7 +15,6 @@ optin="philo"
 
 test_1 ()
 {
-		echo -en  "${Purple}test 1 :"
 		#test 2 / 1
 		output=$("$1" 3 800 200 200 > log &&  cat log | grep died -m 1 | awk '{print $NF}') &
 		i=0
@@ -85,7 +84,6 @@ test_1 ()
 
 test_2 ()
 {
-		echo -en "${Purple}test 2 :"
 		#test 3 / 1
 		pkill "$2" &2> /dev/null
     output=$("$1" 4 410 200 200 > log ; cat log | grep died -m 1 | awk '{print $NF}') &
@@ -157,7 +155,6 @@ test_2 ()
 
 test_3 ()
 {
-  echo -en "${Purple}test 3 :${White}"
   output=$("$1" 4 800 200 200 3  > log & sleep 3; cat log | grep 4 | grep eating | wc -l) 
   output2=$(cat log | grep 3 | grep eating | wc -l) 
   output3=$(cat log | grep 2 | grep eating | wc -l) 
@@ -210,7 +207,6 @@ test_3 ()
 
 test_4 ()
 {
-		echo -en "${Purple}test 4 :"
 		#test 1 / 1
 		output=$("$1" 3 310 200 100 >> log ; sleep 1 ; pkill "$2" ; cat log | grep died -m 1 | awk '{print $NF}') 
 		if [ "$output" == "died" ]
@@ -258,9 +254,13 @@ elif [ "$1" == "m" ]
         optin="philo"
 		echo -e "${Cyan}===============================${Purple} MANDATORU ${Cyan}=============================== ${White}"
 		echo -e "${Yellow}[the tests might take time please wait ...]${White}"
+		echo -en  "${Purple}test 1 :"
 		test_1 "$file_name" "$optin"
+		echo -en  "${Purple}test 2 :"
 		test_4 "$file_name" "$optin"
+		echo -en  "${Purple}test 3 :"
 		test_3 "$file_name" "$optin"
+		echo -en  "${Purple}test 4 :"
 		test_2 "$file_name" "$optin"
 		echo -e "${Cyan}==================================${Purple} END ${Cyan}================================== ${White}"
 		rm -f log log3 log2
@@ -271,7 +271,9 @@ elif [ "$1" == "b" ]
         optin="philo_bonus"
 				echo -e "${Cyan}===============================${Purple} BONUS ${Cyan}=============================== ${White}"
 				echo -e "${Yellow}[the tests might take time please wait ...]${White}"
+				echo -en  "${Purple}test 1 :"
 				test_1 "$file_name" "$optin"
+				echo -en  "${Purple}test 2 :"
 				test_2 "$file_name" "$optin" 
 				echo -e "${Cyan}==================================${Purple} END ${Cyan}================================== ${White}"
 else
